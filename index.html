@@ -363,6 +363,51 @@
       cursor: pointer;
     }
     .burst:hover { background: var(--ink); color: var(--paper); }
+    .player {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 12;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: rgba(251, 246, 238, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: 0 12px 30px rgba(43, 33, 28, 0.12);
+    }
+    .player.show { display: flex; }
+    .player button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--ink);
+      color: var(--paper);
+      cursor: pointer;
+      flex: none;
+    }
+    .player .meta { min-width: 0; }
+    .player strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+    .player span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     footer {
       text-align: center;
       padding: 0 22px 40px;
@@ -422,7 +467,7 @@
     <header class="hero">
       <div class="hero-top">
         <span>02 · 10</span>
-        <span>Chapter 30</span>
+        <span>Eighteen</span>
       </div>
       <h2 class="reveal">Happy birthday<em>Arike</em></h2>
       <p class="sub reveal d1">Ayanbukola Deborah — today the room is yours, and so is every piece of gold in the air.</p>
@@ -458,7 +503,7 @@
         <div class="kicker">A note</div>
         <h3>My girl,</h3>
         <p>I did not want a forwarded wish or a story that disappears by morning. I wanted a small place with your face in it, that you can open again when the day gets loud.</p>
-        <p>Thirty looks like this on you: light on your shoulders, confetti that refuses to land, a smile you do not ration. Every year before this one was practice for the woman holding the room right now.</p>
+        <p>Eighteen looks like this on you: light on your shoulders, confetti that refuses to land, a smile you do not ration. Every year before this one was practice for the girl holding the room right now.</p>
         <p>Stay soft where it matters. Stay loud when the room needs your laugh. Stay the girl I get to call Arike — not because the name is secret, but because it is specific. It is how I love you out loud.</p>
         <p>Happy birthday, Ayanbukola Deborah. Happy birthday, Arike.</p>
         <div class="sign">Barnabas</div>
@@ -479,6 +524,15 @@
     </section>
     <footer>For Ayanbukola Deborah · from Barnabas</footer>
   </main>
+
+  <div class="player" id="player">
+    <button id="toggle" aria-label="Play or pause the song">II</button>
+    <div class="meta">
+      <strong>For Arike</strong>
+      <span>A song with a little love in it</span>
+    </div>
+  </div>
+  <audio id="song" preload="auto" src="audio/for-arike.mp3"></audio>
 
   <script>
     const gate = document.getElementById("gate");
@@ -533,12 +587,25 @@
     }
     tick();
 
+    const song = document.getElementById("song");
+    const player = document.getElementById("player");
+    const toggle = document.getElementById("toggle");
+    function setToggle() { toggle.textContent = song.paused ? "\u25b6" : "II"; }
     function openLetter() {
       gate.classList.add("hide");
       page.classList.add("show");
+      player.classList.add("show");
+      song.play().then(setToggle).catch(setToggle);
       burst(180);
       setTimeout(() => burst(60), 400);
     }
+    toggle.addEventListener("click", () => {
+      if (song.paused) song.play();
+      else song.pause();
+      setToggle();
+    });
+    song.addEventListener("play", setToggle);
+    song.addEventListener("pause", setToggle);
     document.getElementById("open").addEventListener("click", openLetter);
     document.getElementById("seal").addEventListener("click", openLetter);
     document.getElementById("burst").addEventListener("click", () => burst(160));
